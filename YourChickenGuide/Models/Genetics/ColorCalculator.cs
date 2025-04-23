@@ -40,8 +40,13 @@
         //List of Melanotic pattern dominance order
         public static List<string> MelanoticPatternDominanceOrder = new List<string>
         {
-            "Ml",
-            "ml"
+            "Ml", "ml"
+        };
+
+        // List of pattern gene dominance order
+        public static List<string> PatternGeneDominanceOrder = new List<string>
+        {
+            "Pg", "pg+"
         };
 
         public ColorCalculator(string name, string e1, string e2, string co1, string co2, string mo1, string mo2, string ml1, string ml2, string pg1, string pg2)
@@ -120,7 +125,7 @@
         public string GetMelanoticPattern()
         {
             // Ensure Ml1 is always the dominant allele
-            if (MelanoticPatternDominanceOrder.IndexOf(Co1) > MelanoticPatternDominanceOrder.IndexOf(Co2))
+            if (MelanoticPatternDominanceOrder.IndexOf(Ml1) > MelanoticPatternDominanceOrder.IndexOf(Ml2))
             {
                 (Ml1, Ml2) = (Ml2, Ml1); // Swap to maintain correct order
             }
@@ -135,6 +140,24 @@
                 return $"{Ml1}/{Ml2} (Heterozygous)";
             }
 
+        }
+
+        public string GetPatternGenePattern()
+        {
+            // Ensure Pg1 is always the dominant allele
+            if (PatternGeneDominanceOrder.IndexOf(Pg1) > PatternGeneDominanceOrder.IndexOf(Pg2))
+            {
+                (Pg1, Pg2) = (Pg2, Pg1); // Swap to maintain correct order
+            }
+            // Return genotype format (homozygous or heterozygous)
+            if (Pg1 == Pg2)
+            {
+                return $"{Pg1}/{Pg1} (Homozygous)";
+            }
+            else
+            {
+                return $"{Pg1}/{Pg2} (Heterozygous)";
+            }
         }
     }
 }

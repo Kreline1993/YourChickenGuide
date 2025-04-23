@@ -11,6 +11,7 @@ namespace YourChickenGuide.Controllers
             ViewBag.ColumbianPatternDominanceOrder = ColorCalculator.ColumbianPatternDominanceOrder;
             ViewBag.MottlingPatternDominanceOrder = ColorCalculator.MottlingPatternDominanceOrder;
             ViewBag.MelanoticPatternDominanceOrder = ColorCalculator.MelanoticPatternDominanceOrder;
+            ViewBag.PatternGeneDominanceOrder = ColorCalculator.PatternGeneDominanceOrder;
             return View("ColorCalculator");
         }
 
@@ -22,6 +23,7 @@ namespace YourChickenGuide.Controllers
             var columbianPattern = calculator.GetColumbianPattern();
             var mottlingPattern = calculator.GetMottlingPattern();
             var melanoticPattern = calculator.GetMelanoticPattern();
+            var patternGene = calculator.GetPatternGenePattern();  
             ViewBag.BaseColor = baseColor;
             ViewBag.BaseColorDominanceOrder = ColorCalculator.BaseColorDominanceOrder;
             ViewBag.ColumbianPattern = columbianPattern;
@@ -30,6 +32,8 @@ namespace YourChickenGuide.Controllers
             ViewBag.MottlingPatternDominanceOrder = ColorCalculator.MottlingPatternDominanceOrder;
             ViewBag.MelanoticPattern = melanoticPattern;
             ViewBag.MelanoticPatternDominanceOrder = ColorCalculator.MelanoticPatternDominanceOrder;
+            ViewBag.PatternGene = patternGene;
+            ViewBag.PatternGeneDominanceOrder = ColorCalculator.PatternGeneDominanceOrder;
             return View("ColorCalculator");
         }
     }

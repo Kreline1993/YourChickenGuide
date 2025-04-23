@@ -4,6 +4,7 @@
     var columbianPatternDominanceOrder = ViewBag.ColumbianPatternDominanceOrder as List<string>;
     var mottlingPatternDominanceOrder = ViewBag.MottlingPatternDominanceOrder as List<string>;
     var melanoticPatternDominanceOrder = ViewBag.MelanoticPatternDominanceOrder as List<string>;
+    var patternGeneDominanceOrder = ViewBag.PatternGeneDominanceOrder as List<string>;
 }
 <head>
 
@@ -32,6 +33,55 @@
                     <option value="@item">@item</option>
                 }
             </select>
+            <label for="Co2"></label>
+            <select id="Co2" name="Co2">
+                @foreach (var item in columbianPatternDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select><br />
+            <label for="Mo1">Mottling Pattern</label>
+            <select id="Mo1" name="Mo1">
+                @foreach (var item in mottlingPatternDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+            <label for="Mo2"></label>
+            <select id="Mo2" name="Mo2">
+                @foreach (var item in mottlingPatternDominanceOrder)
+                {
+                    <option value ="@item">@item</option>
+                }
+            </select><br />
+            <label for="Ml1">Melanotic Pattern</label>
+            <select id="Ml1" name="Ml1">
+                @foreach (var item in melanoticPatternDominanceOrder)
+                {
+                    <option value ="@item">@item</option>
+                }
+            </select>
+            <label for="Ml2"></label>
+            <select id="Ml2" name="Ml2">
+                @foreach (var item in melanoticPatternDominanceOrder)
+                {
+                    <option vlaue ="@item">@item</option>
+                }
+            </select><br />
+            <label for="Pg1">Pattern Gene</label>
+            <select id="Pg1" name="Pg1">
+                @foreach (var item in patternGeneDominanceOrder)
+                {
+                    <option value ="@item">@item</option>
+                }
+            </select>
+            <label for="Pg2"></label>
+            <select id="Pg2" name="Pg2">
+                @foreach (var item in patternGeneDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select><br />
             <input type="submit" value="submit">
         </form>
         @if (ViewBag.BaseColor != null)
@@ -40,6 +90,8 @@
                 <p>Base Color: @ViewBag.BaseColor</p>
                 <p>Columbian Pattern: @ViewBag.ColumbianPattern</p>
                 <p>Mottling Pattern: @ViewBag.MottlingPattern</p>
+                <p>Melanotic Pattern: @ViewBag.MelanoticPattern</p>
+                <p>Pattern Gene: @ViewBag.PatternGene</p>
             </div>
         }
     </div>
