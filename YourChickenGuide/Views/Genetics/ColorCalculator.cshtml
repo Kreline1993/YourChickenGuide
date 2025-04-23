@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Color Calculator";
+    var baseColorDominanceOrder = ViewBag.BaseColorDominanceOrder as List<string>;
+    var columbianPatternDominanceOrder = ViewBag.ColumbianPatternDominanceOrder as List<string>;
+    var mottlingPatternDominanceOrder = ViewBag.MottlingPatternDominanceOrder as List<string>;
+    var melanoticPatternDominanceOrder = ViewBag.MelanoticPatternDominanceOrder as List<string>;
+}
+<head>
+
+</head>
+<body>
+    <div>
+        <form asp-action="CalculateColor" method="post">
+            <label for="E1">Base Color</label>
+            <select id="E1" name="E1">
+                @foreach (var item in baseColorDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+            <label for="E2"></label>
+            <select id="E2" name="E2">
+                @foreach (var item in baseColorDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select><br>
+            <label for="Co1">Columbian Pattern</label>
+            <select id="Co1" name="Co1">
+                @foreach (var item in columbianPatternDominanceOrder)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+            <input type="submit" value="submit">
+        </form>
+        @if (ViewBag.BaseColor != null)
+        {
+            <div>
+                <p>Base Color: @ViewBag.BaseColor</p>
+                <p>Columbian Pattern: @ViewBag.ColumbianPattern</p>
+                <p>Mottling Pattern: @ViewBag.MottlingPattern</p>
+            </div>
+        }
+    </div>
+</body>
