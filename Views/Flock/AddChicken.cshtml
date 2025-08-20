@@ -1,0 +1,41 @@
+﻿@model YourChickenGuide.Models.Chicken
+@{
+    ViewData["Title"] = "Add Chicken";
+}
+<div class="text-center">
+    <h1 class="display-4">Add A Chicken</h1>
+    <p>Fill in the form to add a chicken to the database</p>
+    <a asp-controller="Flock" asp-action="Overview" class="btn btn-primary">Back to Overview</a>
+    <h1>Add New Chicken</h1>
+
+    <form asp-action="AddNewChicken" method="post">
+        <div class="form-group">
+            <label asp-for="Breed"></label>
+            <input asp-for="Breed" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Legband_Id"></label>
+            <input asp-for="Legband_Id" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label asp-for="Sex"></label>
+            <input type="radio" asp-for="Sex" value="Female"  /> Female
+            <input type="radio" asp-for="Sex" value="Male"  /> Male
+            <input type="radio" asp-for="Sex" value="Unknown"  /> Unknown
+        </div>
+        <div class="form-group">
+            <label asp-for="HatchDate"></label>
+            <input asp-for="HatchDate" class="form-control" type="date"
+                   value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Color"></label>
+            <input asp-for="Color" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Notes"></label>
+            <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>

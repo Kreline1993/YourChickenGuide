@@ -1,0 +1,42 @@
+﻿@model YourChickenGuide.Models.Chicken
+@{
+    ViewData["Title"] = "Edit Chicken";
+}
+<div class="text-center">
+    <h1 class="display-4">@Model.Legband_Id</h1>
+    <form asp-action="EditExistingChicken" asp-controller="Flock" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Breed"></label>
+            <input asp-for="Breed" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Legband_Id"></label>
+            <input asp-for="Legband_Id" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Sex"></label>
+            <input type="radio" asp-for="Sex" value="Female" checked="@(Model.Sex)" /> Female
+            <input type="radio" asp-for="Sex" value="Male" checked="@(Model.Sex)" /> Male
+            <input type="radio" asp-for="Sex" value="Unknown" checked="@(Model.Sex)" /> Unknown
+        </div>
+        <div class="form-group">
+            <label asp-for="HatchDate"></label>
+            <input asp-for="HatchDate" class="form-control" type="date" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Color"></label>
+            <input asp-for="Color" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Notes"></label>
+            <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="Active"></label>
+            <input type="radio" asp-for="Active" value="true" checked="@(Model.Active)" /> Active
+            <input type="radio" asp-for="Active" value="false" checked="@(!Model.Active)" /> Inactive
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>

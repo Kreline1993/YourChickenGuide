@@ -1,0 +1,58 @@
+﻿@model IEnumerable<YourChickenGuide.Models.Chicken>  
+@{  
+    ViewData["Title"] = "Overview";  
+}  
+
+<div class="text-center">  
+    <h1 class="display-4">Overview</h1>  
+    <p>This is where there will be links to add, remove and edit chickens</p>  
+    <a class="btn btn-primary" asp-controller="Flock" asp-action="AddChicken">Add</a>  
+    <a class="btn btn-secondary" asp-controller="Flock" asp-action="DeleteChicken">Delete</a>  
+    <a class="btn btn-info" asp-controller="Flock" asp-action="EditChicken">Edit</a>  
+</div>  
+
+<div class="text-center">
+    <h2>Current Chickens</h2>
+
+    @if (!Model.Any())
+    {
+        <p>No chickens yet.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Legband ID</th>
+                    <th>Breed</th>
+                    <th>Sex</th>
+                    <th>Status</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var chicken in Model)
+                {
+                    <tr>
+                        <td>@chicken.Legband_Id</td>
+                        <td>@chicken.Breed</td>
+                        <td>@chicken.Sex</td>
+                        <td>
+                            @if (chicken.Active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Flock" asp-action="ViewChicken" asp-route-id="@chicken.Id" class="btn btn-link">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

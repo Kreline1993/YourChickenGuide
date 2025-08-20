@@ -1,0 +1,43 @@
+﻿@model YourChickenGuide.Models.Chicken
+
+@{
+    ViewData["Title"] = "Chicken Details";
+}
+<div class="text-center">
+    <h1 class="display-4">@Model.Legband_Id</h1>
+    <p> <a asp-controller="Flock" asp-action="EditChicken" asp-route-id="@Model.Id" class="btn btn-link">Edit</a></p>
+    <table class="table">
+        <tr>
+            <th>Breed</th>
+            <td>@Model.Breed</td>
+        </tr>
+        <tr>
+            <th>Sex</th>
+            <td>@Model.Sex</td>
+        </tr>
+        <tr>
+            <th>Hatch Date</th>
+            <td>@Model.HatchDate.ToString("d")</td>
+        </tr>
+        <tr>
+            <th>Color</th>
+            <td>@Model.Color</td>
+        </tr>
+        <tr>
+            <th>Notes</th>
+            <td>@Model.Notes</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                @if (Model.Active)
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Inactive</span>
+                }
+            </td>
+    </table>
+</div>
