@@ -13,6 +13,7 @@
             <label asp-for="Breed"></label>
             <input asp-for="Breed" class="form-control" />
         </div>
+
         <div class="form-group">
             <label asp-for="Legband_Id"></label>
             <input asp-for="Legband_Id" class="form-control"/>
@@ -35,7 +36,19 @@
         <div class="form-group">
             <label asp-for="Notes"></label>
             <textarea asp-for="Notes" class="form-control"></textarea>
+        </div>      
+
+        <div class="form-group">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="form-control">
+                <option value="Young">Young</option>
+                <option value="Breeder">Breeder</option>
+                <option value="Breakfast">Breakfast Club</option>
+                <option value="Freezer">Freezer Camp</option>
+            </select>
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
     </form>
 </div>

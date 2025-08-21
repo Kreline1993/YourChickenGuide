@@ -13,16 +13,7 @@ namespace YourChickenGuide.Controllers
         {
             _context = context;
         }
-        // For viewing only active chickens, currently working with all chickens below
-        /** public async Task<IActionResult> Overview()
-        {
-            var activeChickens = await _context.Chickens
-                .Where(c => c.Active)
-                .ToListAsync();
 
-            return View(activeChickens);
-        }
-        **/
         // Retrieve a chicken by id and show details in a view
         public IActionResult ViewChicken(int id)
         {
@@ -53,10 +44,7 @@ namespace YourChickenGuide.Controllers
             }
             return View(chicken);
         }
-        public IActionResult DeleteChicken()
-        {
-            return View();
-        }
+
 
         public async Task<IActionResult> AddNewChicken(Chicken chicken)
         {
@@ -100,7 +88,7 @@ namespace YourChickenGuide.Controllers
                 existingChicken.Color = chicken.Color;
                 existingChicken.Notes = chicken.Notes;
                 existingChicken.Sex = chicken.Sex;
-                existingChicken.Active = chicken.Active;
+                existingChicken.Status = chicken.Status;
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("ViewChicken", new {id = existingChicken.Id});

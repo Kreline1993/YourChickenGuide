@@ -14,7 +14,7 @@
         public string? Notes { get; set; }
         public string? Sex { get; set; }
 
-        public bool Active { get; set; } = true;
+        public string Status { get; set; }
 
 
     }
