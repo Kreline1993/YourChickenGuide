@@ -12,8 +12,8 @@ using YourChickenGuide.Data;
 namespace YourChickenGuide.Migrations
 {
     [DbContext(typeof(ApplicationDBContexts))]
-    [Migration("20250819095637_RemoveFlockManagerId")]
-    partial class RemoveFlockManagerId
+    [Migration("20250821193454_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace YourChickenGuide.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Breed")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -53,6 +50,10 @@ namespace YourChickenGuide.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Sex")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

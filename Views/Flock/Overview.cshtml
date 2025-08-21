@@ -5,10 +5,9 @@
 
 <div class="text-center">  
     <h1 class="display-4">Overview</h1>  
-    <p>This is where there will be links to add, remove and edit chickens</p>  
+ 
     <a class="btn btn-primary" asp-controller="Flock" asp-action="AddChicken">Add</a>  
-    <a class="btn btn-secondary" asp-controller="Flock" asp-action="DeleteChicken">Delete</a>  
-    <a class="btn btn-info" asp-controller="Flock" asp-action="EditChicken">Edit</a>  
+
 </div>  
 
 <div class="text-center">
@@ -38,13 +37,34 @@
                         <td>@chicken.Breed</td>
                         <td>@chicken.Sex</td>
                         <td>
-                            @if (chicken.Active)
+                            @if (chicken.Status == "Breeder")
                             {
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success">Breeder</span>
                             }
+                            else if (chicken.Status == "Sold")
+                            {
+                                <span class="badge bg-danger">Sold</span>
+                            }
+                            else if (chicken.Status == "Freezer")
+                            {
+                                <span class="badge bg-primary">Freezer</span>
+                            }
+                            else if (chicken.Status == "Breakfast")
+                            {
+                                <span class="badge bg-warning">Breakfast</span>
+                            }
+                            else if (chicken.Status == "Dead")
+                            {
+                                <span class="badge bg-dark">Dead</span>
+                            }
+                            else if (chicken.Status == "Young")
+                            {
+                                <span class="badge bg-info">Growing</span>
+                            }
+
                             else
                             {
-                                <span class="badge bg-danger">Inactive</span>
+                                <span class="badge bg-secondary">Unassigned</span>
                             }
                         </td>
                         <td>
