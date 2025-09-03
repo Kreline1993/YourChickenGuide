@@ -64,7 +64,7 @@ namespace YourChickenGuide.Controllers
             {
                                return NotFound();
             }
-            return View(chicken);
+            return View("EditChicken", chicken);
         }
         [HttpPost]
         public async Task<IActionResult> EditExistingChicken(int id, Chicken chicken)
@@ -93,7 +93,7 @@ namespace YourChickenGuide.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("ViewChicken", new {id = existingChicken.Id});
             }
-            return View(chicken);
+            return View("ViewChicken", chicken);
         }
 
     }

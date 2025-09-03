@@ -1,5 +1,8 @@
 ﻿namespace YourChickenGuide.Models
-{
+{ 
+using System.ComponentModel.DataAnnotations.Schema;
+
+
     public class Chicken
     {
         public int Id { get; set; }
@@ -15,6 +18,9 @@
         public string? Sex { get; set; }
 
         public string Status { get; set; }
+
+        public int? mother_Id { get; set; }
+        public int? father_Id { get; set; }
 
 
     }
