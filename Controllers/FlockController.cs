@@ -32,6 +32,7 @@ namespace YourChickenGuide.Controllers
         }
         public IActionResult AddChicken()
         {
+            ViewBag.Breeds = BreedList.Breeds;
             return View();
         }
 
