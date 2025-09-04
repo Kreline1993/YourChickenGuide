@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YourChickenGuide.Data;
 
@@ -11,9 +12,11 @@ using YourChickenGuide.Data;
 namespace YourChickenGuide.Migrations
 {
     [DbContext(typeof(ApplicationDBContexts))]
-    partial class ApplicationDBContextsModelSnapshot : ModelSnapshot
+    [Migration("20250904184339_NullableFields")]
+    partial class NullableFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,7 @@ namespace YourChickenGuide.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Color")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateOnly>("HatchDate")
@@ -43,9 +47,11 @@ namespace YourChickenGuide.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Notes")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Sex")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Status")

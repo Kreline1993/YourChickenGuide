@@ -32,7 +32,7 @@ namespace YourChickenGuide.Controllers
         }
         public IActionResult AddChicken()
         {
-            ViewBag.Breeds = BreedList.Breeds;
+            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
             return View();
         }
 
@@ -55,6 +55,7 @@ namespace YourChickenGuide.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Overview");
             }
+            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
             return View("AddChicken", chicken);
         }
         [HttpGet]
