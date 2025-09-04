@@ -2,7 +2,7 @@
 {
     public class BreedList
     {
-        public static readonly List<String> Breeds = new()
+        public static readonly List<string> Breeds = new()
         {
             "Marans",
             "Australorp",
