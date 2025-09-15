@@ -15,8 +15,8 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Legband_Id"></label>
-            <input asp-for="Legband_Id" class="form-control"/>
+            <label asp-for="LegbandNumber"></label>
+            <input asp-for="LegbandNumber" class="form-control"/>
         </div>
         <div class="form-group">
             <label asp-for="Sex"></label>
@@ -40,12 +40,7 @@
 
         <div class="form-group">
             <label asp-for="Status"></label>
-            <select asp-for="Status" class="form-control">
-                <option value="Young">Young</option>
-                <option value="Breeder">Breeder</option>
-                <option value="Breakfast">Breakfast Club</option>
-                <option value="Freezer">Freezer Camp</option>
-            </select>
+            <select asp-for="Status" asp-items="@(new SelectList(ViewBag.Statuses ?? new List<string>()))" class="form-control"></select>
         </div>
         <div>
             <button type="submit" class="btn btn-primary">Save</button>

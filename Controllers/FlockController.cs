@@ -33,6 +33,7 @@ namespace YourChickenGuide.Controllers
         public IActionResult AddChicken()
         {
             ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
+            ViewBag.Statuses = YourChickenGuide.Data.StatusList.Statuses ?? new List<string>();
             return View();
         }
 
