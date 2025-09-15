@@ -19,10 +19,18 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: lightgray;
+    background-color: darkslategrey;
     color: black;
 }
 
 .navbar-color {
-
+    border-bottom: 2px solid #2f3b4d;
 }
+.bg-lightslategray {
+    background-color: lightslategray;
+}
+
+.navbar .nav-link:hover {
+    text-decoration: underline;
+}
+
