@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using YourChickenGuide.Data;
 using YourChickenGuide.Models;
+using Microsoft.EntityFrameworkCore;          
+
 
 
 namespace YourChickenGuide.Controllers
@@ -30,10 +33,38 @@ namespace YourChickenGuide.Controllers
                 .ToListAsync();
             return View(allChickens);
         }
-        public IActionResult AddChicken()
+        public async Task<IActionResult> AddChicken()
         {
             ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
             ViewBag.Statuses = YourChickenGuide.Data.StatusList.Statuses ?? new List<string>();
+
+            // Mothers: active females
+            var mothers = await _context.Chickens
+                .Where(c => c.Sex == "Female")
+                .OrderBy(c => c.Legband_Id) // adjust if your property is LegbandId
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Legband_Id
+                })
+                .ToListAsync();
+            mothers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            // Fathers: active males
+            var fathers = await _context.Chickens
+                .Where(c => c.Sex == "Male")
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Legband_Id
+                })
+                .ToListAsync();
+            fathers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            ViewBag.Mothers = mothers;
+            ViewBag.Fathers = fathers;
+
             return View();
         }
 
@@ -57,6 +88,28 @@ namespace YourChickenGuide.Controllers
                 return RedirectToAction("Overview");
             }
             ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
+
+            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
+            ViewBag.Statuses = YourChickenGuide.Data.StatusList.Statuses ?? new List<string>();
+
+            var mothers = await _context.Chickens
+                .Where(c => c.Sex == "Female")
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
+                .ToListAsync();
+            mothers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            var fathers = await _context.Chickens
+                .Where(c => c.Sex == "Male")
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
+                .ToListAsync();
+            fathers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            ViewBag.Mothers = mothers;
+            ViewBag.Fathers = fathers;
+
+ 
             return View("AddChicken", chicken);
         }
         [HttpGet]
