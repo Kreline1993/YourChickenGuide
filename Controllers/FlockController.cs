@@ -152,5 +152,17 @@ namespace YourChickenGuide.Controllers
             return View("ViewChicken", chicken);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetParentsByBreed(string breed, string sex)
+        {
+            var chickens = await _context.Chickens
+                .Where(c => c.Breed == breed && c.Sex == sex)
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new { c.Id, c.Legband_Id })
+                .ToListAsync();
+
+            return Json(chickens);
+        }
+
     }
 }
