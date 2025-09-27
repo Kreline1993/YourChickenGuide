@@ -19,12 +19,12 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: white;
+    background-color: lightgray;
     color: black;
 }
 
 .navbar-color {
-    border-bottom: 2px solid #2f3b4d;
+    border-bottom: 1px solid #2f3b4d;
 }
 .bg-lightslategray {
     background-color: lightslategray;

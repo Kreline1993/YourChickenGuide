@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;          
 using YourChickenGuide.Data;
 using YourChickenGuide.Models;
-using Microsoft.EntityFrameworkCore;          
+using YourChickenGuide.Models.ViewModels;
 
 
 
@@ -27,11 +28,77 @@ namespace YourChickenGuide.Controllers
             }
             return View(chicken);
         }
-        public async Task<IActionResult> Overview()
+        public async Task<IActionResult> Overview(
+            string? breed, string? sex, string? status, int? motherId, int? fatherId, string? search,
+            string? sortBy, string? sortDir)
         {
-            var allChickens = await _context.Chickens
+            var q = _context.Chickens.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(breed)) q = q.Where(c => c.Breed == breed);
+            if (!string.IsNullOrWhiteSpace(sex)) q = q.Where(c => c.Sex == sex);
+            if (!string.IsNullOrWhiteSpace(status)) q = q.Where(c => c.Status == status);
+            if (motherId.HasValue) q = q.Where(c => c.mother_Id == motherId.Value);
+            if (fatherId.HasValue) q = q.Where(c => c.father_Id == fatherId.Value);
+            if (!string.IsNullOrWhiteSpace(search))
+                q = q.Where(c =>
+                    (c.Legband_Id != null && c.Legband_Id.Contains(search)) ||
+                    (c.Notes != null && c.Notes.Contains(search)) ||
+                    (c.Color != null && c.Color.Contains(search)));
+
+            var dir = (sortDir ?? "asc").ToLowerInvariant();
+            switch ((sortBy ?? "legband").ToLowerInvariant())
+            {
+                case "hatch": q = dir == "desc" ? q.OrderByDescending(c => c.HatchDate) : q.OrderBy(c => c.HatchDate); break;
+                case "breed": q = dir == "desc" ? q.OrderByDescending(c => c.Breed) : q.OrderBy(c => c.Breed); break;
+                case "sex": q = dir == "desc" ? q.OrderByDescending(c => c.Sex) : q.OrderBy(c => c.Sex); break;
+                case "status": q = dir == "desc" ? q.OrderByDescending(c => c.Status) : q.OrderBy(c => c.Status); break;
+                default: q = dir == "desc" ? q.OrderByDescending(c => c.Legband_Id) : q.OrderBy(c => c.Legband_Id); break;
+            }
+
+            var chickens = await q.ToListAsync();
+
+            var breeds = (YourChickenGuide.Data.BreedList.Breeds ?? new List<string>())
+                .Select(b => new SelectListItem { Value = b, Text = b, Selected = b == breed })
+                .Prepend(new SelectListItem { Value = "", Text = "All breeds", Selected = string.IsNullOrEmpty(breed) })
+                .ToList();
+
+            var statuses = (YourChickenGuide.Data.StatusList.Statuses ?? new List<string>())
+                .Select(s => new SelectListItem { Value = s, Text = s, Selected = s == status })
+                .Prepend(new SelectListItem { Value = "", Text = "Any status", Selected = string.IsNullOrEmpty(status) })
+                .ToList();
+
+            var mothers = await _context.Chickens
+                .Where(c => (c.Sex == "Female" || c.Sex == "Hen"))
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id, Selected = motherId == c.Id })
                 .ToListAsync();
-            return View(allChickens);
+            mothers.Insert(0, new SelectListItem { Value = "", Text = "Any mother", Selected = !motherId.HasValue });
+
+            var fathers = await _context.Chickens
+                .Where(c => (c.Sex == "Male" || c.Sex == "Rooster"))
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id, Selected = fatherId == c.Id })
+                .ToListAsync();
+            fathers.Insert(0, new SelectListItem { Value = "", Text = "Any father", Selected = !fatherId.HasValue });
+
+            var vm = new ChickenOverviewVm
+            {
+                Breed = breed,
+                Sex = sex,
+                Status = status,
+                MotherId = motherId,
+                FatherId = fatherId,
+                Search = search,
+                SortBy = sortBy,
+                SortDir = dir,
+                Chickens = chickens,
+                Breeds = breeds,
+                Statuses = statuses,
+                Mothers = mothers,
+                Fathers = fathers
+            };
+
+            return View(vm); 
         }
         public async Task<IActionResult> AddChicken()
         {
