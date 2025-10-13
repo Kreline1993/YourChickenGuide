@@ -12,14 +12,16 @@
             var entity = modelBuilder.Entity<Chicken>();
 
             // MotherId FK -> Chickens(Id)
-            entity.HasOne<Chicken>()           // no navigation prop
-                  .WithMany()
-                  .HasForeignKey(c => c.mother_Id);
+            entity.HasOne(c => c.Mother)
+                  .WithMany(m => m.ChildrenAsMother)
+                  .HasForeignKey(c => c.mother_Id)
+                  .OnDelete(DeleteBehavior.SetNull);
 
             // FatherId FK -> Chickens(Id)
-            entity.HasOne<Chicken>()
-                  .WithMany()
-                  .HasForeignKey(c => c.father_Id);
+            entity.HasOne(c => c.Father)
+                  .WithMany(f => f.ChildrenAsFather)
+                  .HasForeignKey(c => c.father_Id)
+                  .OnDelete(DeleteBehavior.SetNull);
 
             // Helpful indexes
             entity.HasIndex(c => c.mother_Id);

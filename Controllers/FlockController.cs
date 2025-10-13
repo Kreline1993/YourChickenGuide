@@ -21,11 +21,14 @@ namespace YourChickenGuide.Controllers
         // Retrieve a chicken by id and show details in a view
         public IActionResult ViewChicken(int id)
         {
-            var chicken = _context.Chickens.FirstOrDefault(c => c.Id == id);
-            if (chicken == null)
-            {
-                return NotFound();
-            }
+            var chicken = _context.Chickens
+                .Include(c => c.Mother)
+                .Include(c => c.Father)
+                .Include(c => c.ChildrenAsMother)
+                .Include(c => c.ChildrenAsFather)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (chicken == null) return NotFound();
             return View(chicken);
         }
         public async Task<IActionResult> Overview(

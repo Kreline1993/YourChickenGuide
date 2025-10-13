@@ -32,8 +32,12 @@ using System.ComponentModel.DataAnnotations.Schema;
         public string? Sex { get; set; }
         public string? Status { get; set; }
         public int? mother_Id { get; set; }
-        public int? father_Id { get; set; }
 
+        public Chicken? Mother { get; set; }
+        public ICollection<Chicken>? ChildrenAsMother { get; set; }
+        public int? father_Id { get; set; }
+        public Chicken? Father { get; set; }
+        public ICollection<Chicken>? ChildrenAsFather { get; set; }
 
     }
 }

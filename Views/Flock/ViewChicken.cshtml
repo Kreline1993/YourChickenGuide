@@ -12,6 +12,10 @@
             <td>@Model.Breed</td>
         </tr>
         <tr>
+            <th>Color</th>
+            <td>@Model.Color</td>
+        </tr>
+        <tr>
             <th>Sex</th>
             <td>@Model.Sex</td>
         </tr>
@@ -19,10 +23,7 @@
             <th>Hatch Date</th>
             <td>@Model.HatchDate.ToString("d")</td>
         </tr>
-        <tr>
-            <th>Color</th>
-            <td>@Model.Color</td>
-        </tr>
+
         <tr>
             <th>Notes</th>
             <td>@Model.Notes</td>
@@ -31,6 +32,73 @@
             <th>Status</th>
             <td>@Model.Status</td>
         </tr>
+        <tr>
+            <th>Mother</th>
+            <td>
+                @if (Model.Mother != null)
+                {
+                    <a asp-action="ViewChicken" asp-route-id="@Model.Mother.Id">
+                        @Model.Mother.Legband_Id
+                    </a>
+                }
+                else
+                {
+                    <span>Unknown</span>
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>Father</th>
+            <td>
+            @if (Model.Father != null)
+            {
+                <a asp-action="ViewChicken" asp-route-id="@Model.Father.Id">
+                    @Model.Father.Legband_Id
+                </a>
+            }
+            else
+            {
+                <span>Unknown</span>
+            }
+            </td>
+        </tr>
+        <tr>
+            <th>Offspring</th>
+            <td>
+                <div style="max-height: 120px; overflow-y: auto;">
+                    @if ((Model.ChildrenAsMother != null && Model.ChildrenAsMother.Any()) ||
+                                        (Model.ChildrenAsFather != null && Model.ChildrenAsFather.Any()))
+                    {
+                        @if (Model.ChildrenAsMother != null)
+                        {
+                            foreach (var child in Model.ChildrenAsMother)
+                            {
+                                <div>
+                                    <a asp-action="ViewChicken" asp-route-id="@child.Id">
+                                        @child.Legband_Id
+                                    </a>
+                                </div>
+                            }
+                        }
 
+                        @if (Model.ChildrenAsFather != null)
+                        {
+                            foreach (var child in Model.ChildrenAsFather)
+                            {
+                                <div>
+                                    <a asp-action="ViewChicken" asp-route-id="@child.Id">
+                                        @child.Legband_Id
+                                    </a>
+                                </div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <span>No known offspring</span>
+                    }
+                </div>
+            </td>
+        </tr>
     </table>
 </div>
