@@ -1,104 +1,126 @@
 ﻿@model YourChickenGuide.Models.Chicken
-
 @{
     ViewData["Title"] = "Chicken Details";
 }
-<div class="text-center">
-    <h1 class="display-4">@Model.Legband_Id</h1>
-    <p> <a asp-controller="Flock" asp-action="EditChicken" asp-route-id="@Model.Id" class="btn btn-link">Edit</a></p>
-    <table class="table">
-        <tr>
-            <th>Breed</th>
-            <td>@Model.Breed</td>
-        </tr>
-        <tr>
-            <th>Color</th>
-            <td>@Model.Color</td>
-        </tr>
-        <tr>
-            <th>Sex</th>
-            <td>@Model.Sex</td>
-        </tr>
-        <tr>
-            <th>Hatch Date</th>
-            <td>@Model.HatchDate.ToString("d")</td>
-        </tr>
 
-        <tr>
-            <th>Notes</th>
-            <td>@Model.Notes</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td>@Model.Status</td>
-        </tr>
-        <tr>
-            <th>Mother</th>
-            <td>
-                @if (Model.Mother != null)
-                {
-                    <a asp-action="ViewChicken" asp-route-id="@Model.Mother.Id">
-                        @Model.Mother.Legband_Id
-                    </a>
-                }
-                else
-                {
-                    <span>Unknown</span>
-                }
-            </td>
-        </tr>
-        <tr>
-            <th>Father</th>
-            <td>
-            @if (Model.Father != null)
+<div class="details-shell">
+    <div class="text-center mb-3">
+        <h1 class="display-6 mb-2 page-title">
+            @Model.Legband_Id
+            @if (!string.IsNullOrWhiteSpace(Model.Status))
             {
-                <a asp-action="ViewChicken" asp-route-id="@Model.Father.Id">
-                    @Model.Father.Legband_Id
-                </a>
+                <span class="badge status-badge status-@Model.Status.Replace(" ", "") ms-2">
+                    @Model.Status
+                </span>
             }
-            else
-            {
-                <span>Unknown</span>
-            }
-            </td>
-        </tr>
-        <tr>
-            <th>Offspring</th>
-            <td>
-                <div style="max-height: 120px; overflow-y: auto;">
-                    @if ((Model.ChildrenAsMother != null && Model.ChildrenAsMother.Any()) ||
-                                        (Model.ChildrenAsFather != null && Model.ChildrenAsFather.Any()))
-                    {
-                        @if (Model.ChildrenAsMother != null)
-                        {
-                            foreach (var child in Model.ChildrenAsMother)
-                            {
-                                <div>
-                                    <a asp-action="ViewChicken" asp-route-id="@child.Id">
-                                        @child.Legband_Id
-                                    </a>
-                                </div>
-                            }
-                        }
+        </h1>
+        <div class="d-flex justify-content-center page-actions">
+            <a asp-controller="Flock" asp-action="EditExistingChicken" asp-route-id="@Model.Id" class="btn btn-primary">
+                Edit
+            </a>
+            <a asp-controller="Flock" asp-action="Overview" class="btn btn-secondary">
+                Back to Overview
+            </a>
+        </div>
+    </div>
 
-                        @if (Model.ChildrenAsFather != null)
-                        {
-                            foreach (var child in Model.ChildrenAsFather)
+    <div class="card card-surface border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0 custom-table">
+                <tbody>
+                    <tr>
+                        <th>Breed</th>
+                        <td>@Model.Breed</td>
+                    </tr>
+                    <tr>
+                        <th>Color</th>
+                        <td>@Model.Color</td>
+                    </tr>
+                    <tr>
+                        <th>Sex</th>
+                        <td>@Model.Sex</td>
+                    </tr>
+                    <tr>
+                        <th>Hatch Date</th>
+                        <td>@Model.HatchDate.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    <tr>
+                        <th>Notes</th>
+                        <td>@Model.Notes</td>
+                    </tr>
+                    <tr>
+                        <th>Mother</th>
+                        <td>
+                            @if (Model.Mother != null)
                             {
-                                <div>
-                                    <a asp-action="ViewChicken" asp-route-id="@child.Id">
-                                        @child.Legband_Id
-                                    </a>
-                                </div>
+                                <a asp-action="ViewChicken" asp-route-id="@Model.Mother.Id">
+                                    @Model.Mother.Legband_Id
+                                </a>
                             }
-                        }
-                    }
-                    else
-                    {
-                        <span>No known offspring</span>
-                    }
-                </div>
-            </td>
-        </tr>
-    </table>
+                            else
+                            {
+
+                                <span class="text-muted">Unknown</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Father</th>
+                        <td>
+                            @if (Model.Father != null)
+                            {
+                                <a asp-action="ViewChicken" asp-route-id="@Model.Father.Id">
+                                    @Model.Father.Legband_Id
+                                </a>
+                            }
+                            else
+                            {
+
+                                <span class="text-muted">Unknown</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Offspring</th>
+                        <td>
+                            <div class="offspring-scroll">
+                                @if ((Model.ChildrenAsMother != null && Model.ChildrenAsMother.Any()) ||
+                                                                (Model.ChildrenAsFather != null && Model.ChildrenAsFather.Any()))
+                                {
+                                    @if (Model.ChildrenAsMother != null)
+                                    {
+                                        foreach (var child in Model.ChildrenAsMother)
+                                        {
+                                            <div>
+                                                <a asp-action="ViewChicken" asp-route-id="@child.Id">
+                                                    @child.Legband_Id
+                                                </a>
+                                                <small class="text-muted">(as Mother)</small>
+                                            </div>
+                                        }
+                                    }
+                                    @if (Model.ChildrenAsFather != null)
+                                    {
+                                        foreach (var child in Model.ChildrenAsFather)
+                                        {
+                                            <div>
+                                                <a asp-action="ViewChicken" asp-route-id="@child.Id">
+                                                    @child.Legband_Id
+                                                </a>
+                                                <small class="text-muted">(as Father)</small>
+                                            </div>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No known offspring</span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

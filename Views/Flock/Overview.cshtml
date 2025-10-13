@@ -1,24 +1,18 @@
 ﻿@model YourChickenGuide.Models.ViewModels.ChickenOverviewVm
 @{
     ViewData["Title"] = "Overview";
-    string Toggle(string column) =>
-        (Model.SortBy == column && Model.SortDir == "asc") ? "desc" : "asc";
 }
+<div class="overview-shell">
+    <div class="text-center mb-4">
+        <h1 class="page-title display-6 mb-2">Overview</h1>
+        <a class="btn btn-primary" asp-controller="Flock" asp-action="AddChicken">Add</a>
+    </div>
 
-<div class="text-center">  
-    <h1 class="display-4">Overview</h1>  
- 
-    <a class="btn btn-primary" asp-controller="Flock" asp-action="AddChicken">Add</a>  
-
-</div>  
-
-<div class="text-center">
-    <form method="get" class="row g-3 align-items-end mb-3">
+    <form method="get" class="row g-3 align-items-end mb-4">
         <div class="col-md-2">
             <label class="form-label">Breed</label>
             <select name="breed" class="form-control" asp-items="Model.Breeds"></select>
         </div>
-
         <div class="col-md-2">
             <label class="form-label">Sex</label>
             <select name="sex" class="form-control">
@@ -28,104 +22,158 @@
                 <option value="Unknown" selected="@(Model.Sex == "Unknown")">Unknown</option>
             </select>
         </div>
-
         <div class="col-md-2">
             <label class="form-label">Status</label>
-            <select name="status" class="form-control" asp-items="Model.Statuses">
-                <!-- Model.Statuses should include: "Any status" (blank) + your list -->
-            </select>
+            <select name="status" class="form-control" asp-items="Model.Statuses"></select>
         </div>
-
         <div class="col-md-2">
             <label class="form-label">Mother</label>
             <select name="motherId" class="form-control" asp-items="Model.Mothers"></select>
         </div>
-
         <div class="col-md-2">
             <label class="form-label">Father</label>
             <select name="fatherId" class="form-control" asp-items="Model.Fathers"></select>
         </div>
-
         <div class="col-md-2">
             <label class="form-label">Search</label>
             <input name="search" value="@Model.Search" class="form-control" placeholder="Legband, color, notes..." />
         </div>
-
         <div class="col-12 text-end">
             <button class="btn btn-primary">Filter</button>
             <a class="btn btn-secondary" href="@Url.Action("Overview", "Flock")">Reset</a>
         </div>
     </form>
-    <h2>Current Chickens</h2>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>
-                        <a asp-action="Overview"
-                           asp-route-breed="@Model.Breed"
-                           asp-route-sex="@Model.Sex"
-                           asp-route-motherId="@Model.MotherId"
-                           asp-route-fatherId="@Model.FatherId"
-                           asp-route-onlyActive="@Model.Status"
-                           asp-route-search="@Model.Search"
-                           asp-route-sortBy="legband"
-                           asp-route-sortDir="@Toggle("legband")">
-                            Legband
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Overview" asp-route-breed="@Model.Breed" asp-route-sex="@Model.Sex"
-                           asp-route-motherId="@Model.MotherId" asp-route-fatherId="@Model.FatherId"
-                           asp-route-onlyActive="@Model.Status" asp-route-search="@Model.Search"
-                           asp-route-sortBy="hatch" asp-route-sortDir="@Toggle("hatch")">
-                            Hatch Date
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Overview" asp-route-breed="@Model.Breed" asp-route-sex="@Model.Sex"
-                           asp-route-motherId="@Model.MotherId" asp-route-fatherId="@Model.FatherId"
-                           asp-route-onlyActive="@Model.Status" asp-route-search="@Model.Search"
-                           asp-route-sortBy="breed" asp-route-sortDir="@Toggle("breed")">
-                            Breed
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Overview" asp-route-breed="@Model.Breed" asp-route-sex="@Model.Sex"
-                           asp-route-motherId="@Model.MotherId" asp-route-fatherId="@Model.FatherId"
-                           asp-route-onlyActive="@Model.Status" asp-route-search="@Model.Search"
-                           asp-route-sortBy="sex" asp-route-sortDir="@Toggle("sex")">
-                            Sex
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-action="Overview" asp-route-breed="@Model.Breed" asp-route-sex="@Model.Sex"
-                           asp-route-motherId="@Model.MotherId" asp-route-fatherId="@Model.FatherId"
-                           asp-route-onlyActive="@Model.Status" asp-route-search="@Model.Search"
-                           asp-route-sortBy="status" asp-route-sortDir="@Toggle("status")">
-                            Status
-                        </a>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var c in Model.Chickens)
-                {
-                    <tr>
-                        <td>@c.Legband_Id</td>
-                        <td>@c.HatchDate.ToString("yyyy-MM-dd")</td>
-                        <td>@c.Breed</td>
-                        <td>@c.Sex</td>
-                        <td>@c.Status</td>
-                        <td>
-                            <a class="btn btn-sm btn-outline-info"
-                               asp-action="ViewChicken" asp-route-id="@c.Id">View</a>
-                            <a class="btn btn-sm btn-outline-primary"
-                               asp-action="EditExistingChicken" asp-route-id="@c.Id">Edit</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    
+
+    @if (!(Model.Chickens?.Any() ?? false))
+    {
+        <div class="card card-surface border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <h5 class="mb-2">No chickens match your filters</h5>
+                <p class="text-muted mb-4">Try changing filters or add a new chicken.</p>
+                <a class="btn btn-primary" asp-controller="Flock" asp-action="AddChicken">Add Chicken</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card card-surface border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0 custom-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="@(Model.SortBy == "legband" ? "table-active" : "")">
+                                <a asp-action="Overview"
+                                   asp-route-breed="@Model.Breed"
+                                   asp-route-sex="@Model.Sex"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-motherId="@Model.MotherId"
+                                   asp-route-fatherId="@Model.FatherId"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-sortBy="legband"
+                                   asp-route-sortDir="@(Model.SortBy == "legband" && Model.SortDir == "asc" ? "desc" : "asc")"
+                                   class="text-decoration-none">
+                                    Legband
+                                    @if (Model.SortBy == "legband")
+                                    {
+                                        <sup>@(Model.SortDir == "asc" ? "▴" : "▾")</sup>
+                                    }
+                                </a>
+                            </th>
+                            <th class="@(Model.SortBy == "hatch" ? "table-active" : "")">
+                                <a asp-action="Overview"
+                                   asp-route-breed="@Model.Breed"
+                                   asp-route-sex="@Model.Sex"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-motherId="@Model.MotherId"
+                                   asp-route-fatherId="@Model.FatherId"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-sortBy="hatch"
+                                   asp-route-sortDir="@(Model.SortBy == "hatch" && Model.SortDir == "asc" ? "desc" : "asc")"
+                                   class="text-decoration-none">
+                                    Hatch Date
+                                    @if (Model.SortBy == "hatch")
+                                    {
+                                        <sup>@(Model.SortDir == "asc" ? "▴" : "▾")</sup>
+                                    }
+                                </a>
+                            </th>
+                            <th class="@(Model.SortBy == "breed" ? "table-active" : "")">
+                                <a asp-action="Overview"
+                                   asp-route-breed="@Model.Breed"
+                                   asp-route-sex="@Model.Sex"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-motherId="@Model.MotherId"
+                                   asp-route-fatherId="@Model.FatherId"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-sortBy="breed"
+                                   asp-route-sortDir="@(Model.SortBy == "breed" && Model.SortDir == "asc" ? "desc" : "asc")"
+                                   class="text-decoration-none">
+                                    Breed
+                                    @if (Model.SortBy == "breed")
+                                    {
+                                        <sup>@(Model.SortDir == "asc" ? "▴" : "▾")</sup>
+                                    }
+                                </a>
+                            </th>
+                            <th class="@(Model.SortBy == "sex" ? "table-active" : "")">
+                                <a asp-action="Overview"
+                                   asp-route-breed="@Model.Breed"
+                                   asp-route-sex="@Model.Sex"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-motherId="@Model.MotherId"
+                                   asp-route-fatherId="@Model.FatherId"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-sortBy="sex"
+                                   asp-route-sortDir="@(Model.SortBy == "sex" && Model.SortDir == "asc" ? "desc" : "asc")"
+                                   class="text-decoration-none">
+                                    Sex
+                                    @if (Model.SortBy == "sex")
+                                    {
+                                        <sup>@(Model.SortDir == "asc" ? "▴" : "▾")</sup>
+                                    }
+                                </a>
+                            </th>
+                            <th class="@(Model.SortBy == "status" ? "table-active" : "")">
+                                <a asp-action="Overview"
+                                   asp-route-breed="@Model.Breed"
+                                   asp-route-sex="@Model.Sex"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-motherId="@Model.MotherId"
+                                   asp-route-fatherId="@Model.FatherId"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-sortBy="status"
+                                   asp-route-sortDir="@(Model.SortBy == "status" && Model.SortDir == "asc" ? "desc" : "asc")"
+                                   class="text-decoration-none">
+                                    Status
+                                    @if (Model.SortBy == "status")
+                                    {
+                                        <sup>@(Model.SortDir == "asc" ? "▴" : "▾")</sup>
+                                    }
+                                </a>
+                            </th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.Chickens)
+                        {
+                            <tr>
+                                <td class="fw-medium">@c.Legband_Id</td>
+                                <td>@c.HatchDate.ToString("yyyy-MM-dd")</td>
+                                <td>@c.Breed</td>
+                                <td>@c.Sex</td>
+                                <td>@c.Status</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-info"
+                                       asp-action="ViewChicken" asp-route-id="@c.Id">View</a>
+                                    <a class="btn btn-sm btn-primary ms-1"
+                                       asp-action="EditExistingChicken" asp-route-id="@c.Id">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
 </div>

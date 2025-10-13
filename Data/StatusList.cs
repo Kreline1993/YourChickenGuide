@@ -7,7 +7,8 @@
             "Young",
             "Breeder",
             "Breakfast",
-            "Freezer"
+            "Freezer",
+            "Inactive"
         };
     }
 }

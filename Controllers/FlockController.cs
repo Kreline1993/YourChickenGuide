@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;          
+using Microsoft.EntityFrameworkCore;
 using YourChickenGuide.Data;
 using YourChickenGuide.Models;
 using YourChickenGuide.Models.ViewModels;
-
-
 
 namespace YourChickenGuide.Controllers
 {
@@ -18,7 +16,34 @@ namespace YourChickenGuide.Controllers
             _context = context;
         }
 
-        // Retrieve a chicken by id and show details in a view
+        // Shared: populate dropdowns (breeds, statuses, parents)
+        private async Task PopulateEditListsAsync(Chicken? model = null)
+        {
+            ViewBag.Breeds = BreedList.Breeds ?? new List<string>();
+            ViewBag.Statuses = StatusList.Statuses ?? new List<string>();
+
+            var mothers = await _context.Chickens.AsNoTracking()
+                .Where(c =>
+                    (c.Status == null || c.Status != "Inactive") &&
+                    (c.Sex == "Female" || c.Sex == "Hen"))
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
+                .ToListAsync();
+            mothers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            var fathers = await _context.Chickens.AsNoTracking()
+                .Where(c =>
+                    (c.Status == null || c.Status != "Inactive") &&
+                    (c.Sex == "Male" || c.Sex == "Rooster"))
+                .OrderBy(c => c.Legband_Id)
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
+                .ToListAsync();
+            fathers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
+
+            ViewBag.Mothers = mothers;
+            ViewBag.Fathers = fathers;
+        }
+
         public IActionResult ViewChicken(int id)
         {
             var chicken = _context.Chickens
@@ -31,15 +56,21 @@ namespace YourChickenGuide.Controllers
             if (chicken == null) return NotFound();
             return View(chicken);
         }
+
         public async Task<IActionResult> Overview(
-            string? breed, string? sex, string? status, int? motherId, int? fatherId, string? search,
-            string? sortBy, string? sortDir)
+            string? breed, string? sex, string? status, int? motherId, int? fatherId,
+            string? search, string? sortBy, string? sortDir)
         {
             var q = _context.Chickens.AsNoTracking().AsQueryable();
 
+            // Status rule: exclude Inactive by default, include only chosen status if provided
+            if (string.IsNullOrWhiteSpace(status))
+                q = q.Where(c => c.Status == null || c.Status != "Inactive");
+            else
+                q = q.Where(c => c.Status == status);
+
             if (!string.IsNullOrWhiteSpace(breed)) q = q.Where(c => c.Breed == breed);
             if (!string.IsNullOrWhiteSpace(sex)) q = q.Where(c => c.Sex == sex);
-            if (!string.IsNullOrWhiteSpace(status)) q = q.Where(c => c.Status == status);
             if (motherId.HasValue) q = q.Where(c => c.mother_Id == motherId.Value);
             if (fatherId.HasValue) q = q.Where(c => c.father_Id == fatherId.Value);
             if (!string.IsNullOrWhiteSpace(search))
@@ -60,25 +91,26 @@ namespace YourChickenGuide.Controllers
 
             var chickens = await q.ToListAsync();
 
-            var breeds = (YourChickenGuide.Data.BreedList.Breeds ?? new List<string>())
+            var breeds = (BreedList.Breeds ?? new List<string>())
                 .Select(b => new SelectListItem { Value = b, Text = b, Selected = b == breed })
                 .Prepend(new SelectListItem { Value = "", Text = "All breeds", Selected = string.IsNullOrEmpty(breed) })
                 .ToList();
 
-            var statuses = (YourChickenGuide.Data.StatusList.Statuses ?? new List<string>())
+            var statuses = (StatusList.Statuses ?? new List<string>())
                 .Select(s => new SelectListItem { Value = s, Text = s, Selected = s == status })
                 .Prepend(new SelectListItem { Value = "", Text = "Any status", Selected = string.IsNullOrEmpty(status) })
                 .ToList();
 
-            var mothers = await _context.Chickens
-                .Where(c => (c.Sex == "Female" || c.Sex == "Hen"))
+            // Parent filters in the filter bar — also exclude Inactive
+            var mothers = await _context.Chickens.AsNoTracking()
+                .Where(c => (c.Status == null || c.Status != "Inactive") && (c.Sex == "Female" || c.Sex == "Hen"))
                 .OrderBy(c => c.Legband_Id)
                 .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id, Selected = motherId == c.Id })
                 .ToListAsync();
             mothers.Insert(0, new SelectListItem { Value = "", Text = "Any mother", Selected = !motherId.HasValue });
 
-            var fathers = await _context.Chickens
-                .Where(c => (c.Sex == "Male" || c.Sex == "Rooster"))
+            var fathers = await _context.Chickens.AsNoTracking()
+                .Where(c => (c.Status == null || c.Status != "Inactive") && (c.Sex == "Male" || c.Sex == "Rooster"))
                 .OrderBy(c => c.Legband_Id)
                 .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id, Selected = fatherId == c.Id })
                 .ToListAsync();
@@ -101,138 +133,93 @@ namespace YourChickenGuide.Controllers
                 Fathers = fathers
             };
 
-            return View(vm); 
+            return View(vm);
         }
+
         public async Task<IActionResult> AddChicken()
         {
-            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
-            ViewBag.Statuses = YourChickenGuide.Data.StatusList.Statuses ?? new List<string>();
-
-            // Mothers: active females
-            var mothers = await _context.Chickens
-                .Where(c => c.Sex == "Female")
-                .OrderBy(c => c.Legband_Id) // adjust if your property is LegbandId
-                .Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Legband_Id
-                })
-                .ToListAsync();
-            mothers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
-
-            // Fathers: active males
-            var fathers = await _context.Chickens
-                .Where(c => c.Sex == "Male")
-                .OrderBy(c => c.Legband_Id)
-                .Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Legband_Id
-                })
-                .ToListAsync();
-            fathers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
-
-            ViewBag.Mothers = mothers;
-            ViewBag.Fathers = fathers;
-
+            await PopulateEditListsAsync();
             return View();
         }
 
-        public IActionResult EditChicken(int id)
+        public async Task<IActionResult> EditChicken(int id)
         {
-            var chicken = _context.Chickens.FirstOrDefault(c => c.Id == id);
-            if (chicken == null)
-            {
-                return NotFound();
-            }
+            var chicken = await _context.Chickens.FindAsync(id);
+            if (chicken == null) return NotFound();
+
+            // ✅ This was missing — populate ViewBags for the edit view
+            await PopulateEditListsAsync(chicken);
             return View(chicken);
         }
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddNewChicken(Chicken chicken)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(chicken);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Overview");
+                await PopulateEditListsAsync(chicken);
+                return View("AddChicken", chicken);
             }
-            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
 
-            ViewBag.Breeds = YourChickenGuide.Data.BreedList.Breeds ?? new List<string>();
-            ViewBag.Statuses = YourChickenGuide.Data.StatusList.Statuses ?? new List<string>();
-
-            var mothers = await _context.Chickens
-                .Where(c => c.Sex == "Female")
-                .OrderBy(c => c.Legband_Id)
-                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
-                .ToListAsync();
-            mothers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
-
-            var fathers = await _context.Chickens
-                .Where(c => c.Sex == "Male")
-                .OrderBy(c => c.Legband_Id)
-                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Legband_Id })
-                .ToListAsync();
-            fathers.Insert(0, new SelectListItem { Value = "", Text = "Unknown" });
-
-            ViewBag.Mothers = mothers;
-            ViewBag.Fathers = fathers;
-
- 
-            return View("AddChicken", chicken);
+            _context.Add(chicken);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Overview");
         }
+
         [HttpGet]
         public async Task<IActionResult> EditExistingChicken(int id)
         {
             var chicken = await _context.Chickens.FindAsync(id);
-            if (chicken == null)
-            {
-                               return NotFound();
-            }
+            if (chicken == null) return NotFound();
+
+            await PopulateEditListsAsync(chicken);
             return View("EditChicken", chicken);
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditExistingChicken(int id, Chicken chicken)
         {
-            if (id != chicken.Id)
-            {
-                return BadRequest();
-            }
-            if (ModelState.IsValid)
-            {
-                var existingChicken = await _context.Chickens.FindAsync(id);
-                if (existingChicken == null)
-                {
-                    return NotFound();
-                }
+            if (id != chicken.Id) return BadRequest();
 
-                // Update only the properties you want to allow editing
-                existingChicken.Legband_Id = chicken.Legband_Id;
-                existingChicken.HatchDate = chicken.HatchDate;
-                existingChicken.Breed = chicken.Breed;
-                existingChicken.Color = chicken.Color;
-                existingChicken.Notes = chicken.Notes;
-                existingChicken.Sex = chicken.Sex;
-                existingChicken.Status = chicken.Status;
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction("ViewChicken", new {id = existingChicken.Id});
+            if (!ModelState.IsValid)
+            {
+                await PopulateEditListsAsync(chicken);
+                return View("EditChicken", chicken);
             }
-            return View("ViewChicken", chicken);
+
+            var existingChicken = await _context.Chickens.FindAsync(id);
+            if (existingChicken == null) return NotFound();
+
+            // Update allowed fields
+            existingChicken.Legband_Id = chicken.Legband_Id;
+            existingChicken.HatchDate = chicken.HatchDate;
+            existingChicken.Breed = chicken.Breed;
+            existingChicken.Color = chicken.Color;
+            existingChicken.Notes = chicken.Notes;
+            existingChicken.Sex = chicken.Sex;
+            existingChicken.Status = chicken.Status;
+            existingChicken.mother_Id = chicken.mother_Id;
+            existingChicken.father_Id = chicken.father_Id;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ViewChicken", new { id = existingChicken.Id });
         }
 
         [HttpGet]
         public async Task<IActionResult> GetParentsByBreed(string breed, string sex)
         {
-            var chickens = await _context.Chickens
-                .Where(c => c.Breed == breed && c.Sex == sex)
+            var chickens = await _context.Chickens.AsNoTracking()
+                .Where(c =>
+                    c.Breed == breed &&
+                    c.Sex == sex &&
+                    (c.Status == null || c.Status != "Inactive"))
                 .OrderBy(c => c.Legband_Id)
-                .Select(c => new { c.Id, c.Legband_Id })
+                .Select(c => new { id = c.Id, legband_Id = c.Legband_Id }) // keys match your JS
                 .ToListAsync();
 
             return Json(chickens);
         }
-
     }
 }

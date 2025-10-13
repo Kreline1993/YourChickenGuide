@@ -2,124 +2,132 @@
 @{
     ViewData["Title"] = "Add Chicken";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - YourChickenGuide</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/YourChickenGuide.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <div class="text-center">
-        <div class="w-75 mx-auto bg-lightslategray p-4 rounded shadow">
-            <h1 class="mb-4">Add New Chicken</h1>
 
-            <form asp-action="AddNewChicken" method="post">
-                <div class="row">
-                    <!-- Left column -->
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="Breed"></label>
-                            <select asp-for="Breed"
-                                    asp-items="@(new SelectList(ViewBag.Breeds ?? new List<string>()))"
-                                    class="form-control">
-                                <option value="">Select Breed</option>
-                            </select>
-                        </div>
+<div class="details-shell">
 
-                        <div class="form-group mb-3">
-                            <label asp-for="LegbandNumber">Legband Number</label>
-                            <input asp-for="LegbandNumber" class="form-control" placeholder="00 0000" />
-                        </div>
 
-                        <div class="form-group mb-3">
-                            <label asp-for="Sex"></label>
-                            <select asp-for="Sex" class="form-control">
-                                <option value="">Select Sex</option>
-                                <option value="Female">Female</option>
-                                <option value="Male">Male</option>
-                                <option value="Unknown">Unknown</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="HatchDate"></label>
-                            <input asp-for="HatchDate" class="form-control" type="date"
-                                   value="@DateTime.Today.ToString("yyyy-MM-dd")" />
-                        </div>
-
-                    </div>
-
-                    <!-- Right column -->
-
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="mother_Id">Mother</label>
-                            <select id="MotherId" asp-for="mother_Id" class="form-control">
-                                <option value="">Unknown</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="father_Id">Father</label>
-                            <select id="FatherId" asp-for="father_Id" class="form-control">
-                                <option value="">Unknown</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Status"></label>
-                            <select asp-for="Status" asp-items="@(new SelectList(ViewBag.Statuses ?? new List<string>()))" class="form-control">
-                                <option value="">Status</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Color"></label>
-                            <input asp-for="Color" class="form-control" />
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Full-width submit button -->
-                <div class="form-group mt-4">
-                    <div class="form-group mb-3">
-                        <label asp-for="Notes"></label>
-                        <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary px-5">Save</button>
-                </div>
-            </form>
+    <div class="card card-surface border-0 shadow-sm p-4">
+        <div class="text-center mb-3">
+            <h1 class="display-6 mb-2 page-title">Add New Chicken</h1>
         </div>
+        <form asp-action="AddNewChicken" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <!-- Left column -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Breed"></label>
+                        <select id="Breed"
+                                asp-for="Breed"
+                                asp-items="@(new SelectList(ViewBag.Breeds ?? new List<string>()))"
+                                class="form-control">
+                            <option value="">Select Breed</option>
+                        </select>
+                        <span asp-validation-for="Breed" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="LegbandNumber">Legband Number</label>
+                        <input asp-for="LegbandNumber" class="form-control" placeholder="00 0000" />
+                        <span asp-validation-for="LegbandNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Sex"></label>
+                        <select asp-for="Sex" class="form-control">
+                            <option value="">Select Sex</option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                        <span asp-validation-for="Sex" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="HatchDate"></label>
+                        <input asp-for="HatchDate" class="form-control" type="date"
+                               value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="HatchDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Right column -->
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="mother_Id">Mother</label>
+                        <select id="MotherId" asp-for="mother_Id" class="form-control">
+                            <option value="">Unknown</option>
+                        </select>
+                        <span asp-validation-for="mother_Id" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="father_Id">Father</label>
+                        <select id="FatherId" asp-for="father_Id" class="form-control">
+                            <option value="">Unknown</option>
+                        </select>
+                        <span asp-validation-for="father_Id" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Status"></label>
+                        <select asp-for="Status"
+                                asp-items="@(new SelectList(ViewBag.Statuses ?? new List<string>()))"
+                                class="form-control">
+                            <option value="">Status</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Color"></label>
+                        <input asp-for="Color" class="form-control" />
+                        <span asp-validation-for="Color" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full-width -->
+            <div class="form-group mt-4 text-center">
+                <div class="form-group mb-3">
+                    <label asp-for="Notes"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-5">Save</button>
+                <a class="btn btn-secondary ms-2" asp-action="Overview" asp-controller="Flock">Cancel</a>
+            </div>
+        </form>
     </div>
+</div>
+
 @section Scripts {
-<script>
-    $("#Breed").change(function () {
-        var breed = $(this).val();
+    <script>
+        (function () {
+            // When Breed changes, load candidates for parents
+            $("#Breed").on("change", function () {
+                var breed = $(this).val();
 
-        // Load mothers
-        $.getJSON('/Flock/GetParentsByBreed', { breed: breed, sex: "Female" }, function (data) {
-            var motherSelect = $("#MotherId");
-            motherSelect.empty().append($('<option>', { value: "", text: "Unknown" }));
-            $.each(data, function (i, chicken) {
-                motherSelect.append($('<option>', { value: chicken.id, text: chicken.legband_Id }));
-            });
-        });
+                // Mothers
+                $.getJSON('/Flock/GetParentsByBreed', { breed: breed, sex: "Female" }, function (data) {
+                    var motherSelect = $("#MotherId");
+                    motherSelect.empty().append($('<option>', { value: "", text: "Unknown" }));
+                    $.each(data, function (i, chicken) {
+                        motherSelect.append($('<option>', { value: chicken.id, text: chicken.legband_Id }));
+                    });
+                });
 
-        // Load fathers
-        $.getJSON('/Flock/GetParentsByBreed', { breed: breed, sex: "Male" }, function (data) {
-            var fatherSelect = $("#FatherId");
-            fatherSelect.empty().append($('<option>', { value: "", text: "Unknown" }));
-            $.each(data, function (i, chicken) {
-                fatherSelect.append($('<option>', { value: chicken.id, text: chicken.legband_Id }));
+                // Fathers
+                $.getJSON('/Flock/GetParentsByBreed', { breed: breed, sex: "Male" }, function (data) {
+                    var fatherSelect = $("#FatherId");
+                    fatherSelect.empty().append($('<option>', { value: "", text: "Unknown" }));
+                    $.each(data, function (i, chicken) {
+                        fatherSelect.append($('<option>', { value: chicken.id, text: chicken.legband_Id }));
+                    });
+                });
             });
-        });
-    });
-</script>
+        })();
+    </script>
 }
-</body>
-</html>

@@ -1,36 +1,172 @@
-html {
-  font-size: 14px;
+/* ===== THEME COLORS ===== */
+:root {
+    --ycg-bg: #D3D3D3; /* page background */
+    --ycg-card: #778899; /* cards + table headers */
+    --ycg-primary: #7092BE; /* primary button */
+    --ycg-secondary: #6C757D; /* secondary button */
+    --ycg-row-odd: #C2D0E6; /* zebra 1 */
+    --ycg-row-even: #A8B4C7; /* zebra 2 */
+    --ycg-row-hover: #B9C7DD; /* hover color */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem red;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* ===== PAGE BACKGROUND ===== */
 body {
-    margin-bottom: 60px;
-    background-color: lightgray;
-    color: black;
+    background-color: var(--ycg-bg);
+    color: #111;
 }
 
+main.flex-fill > .container {
+    padding-bottom: 1.5rem;
+}
+
+.site-footer {
+    height: 80px; /* adjust later to 50px if you want */
+    background-color: var(--ycg-card);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 0 1rem;
+}
+
+/* ===== CARDS ===== */
+.card,
+.card-surface {
+    background-color: var(--ycg-card) !important;
+    border-radius: 1rem;
+    border: none;
+    color: #fff; /* readable on #778899 */
+}
+
+    .card .table,
+    .card .form-control,
+    .card .btn {
+        color: #0f172a;
+    }
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background-color: var(--ycg-primary) !important;
+    border-color: var(--ycg-primary) !important;
+    color: #fff !important;
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        filter: brightness(0.92);
+    }
+
+.btn-secondary {
+    background-color: var(--ycg-secondary) !important;
+    border-color: var(--ycg-secondary) !important;
+    color: #fff !important;
+}
+
+    .btn-secondary:hover,
+    .btn-secondary:focus {
+        filter: brightness(0.92);
+    }
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 .2rem rgba(112,146,190,.25) !important;
+    border-color: var(--ycg-primary);
+}
+
+/* ===== TABLES ===== */
+
+/* Table header */
+.table-header {
+    background: var(--ycg-card) !important;
+    color: #fff;
+}
+
+    .table-header th,
+    .table-header a {
+        color: #fff !important;
+        text-decoration: none;
+    }
+
+/* Zebra striping (cell-based override for bootstrap) */
+.table.custom-table > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--ycg-row-odd) !important;
+}
+
+.table.custom-table > tbody > tr:nth-of-type(even) > * {
+    background-color: var(--ycg-row-even) !important;
+}
+
+/* Hover */
+.table.custom-table > tbody > tr:hover > * {
+    background-color: var(--ycg-row-hover) !important;
+}
+
+/* Sticky table header */
+.table-responsive .table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--ycg-card) !important;
+}
+
+/* Table links */
+.table a {
+    color: #0b3b70;
+}
+
+    .table a:hover {
+        text-decoration: underline;
+    }
+
+/* Optional softer borders */
+.table.custom-table > :not(caption) > * > * {
+    border-color: rgba(0, 0, 0, .08);
+}
+
+/* ===== MISC CLASSES PRESERVED ===== */
 .navbar-color {
     border-bottom: 1px solid #2f3b4d;
 }
+
 .bg-lightslategray {
-    background-color: lightslategray;
+    background-color: var(--ycg-card);
 }
 
-.navbar .nav-link:hover {
-    text-decoration: underline;
+.offspring-scroll {
+    max-height: 140px;
+    overflow-y: auto;
 }
 
+/* Status badges */
+.status-badge {
+    font-weight: 600;
+}
+
+.status-Young {
+    background: #e7f1ff;
+    color: #0a58ca;
+}
+
+.status-Breeder {
+    background: #eaf7ea;
+    color: #1f7a1f;
+}
+
+.status-Breakfast {
+    background: #fff3cd;
+    color: #a05a00;
+}
+
+.status-Freezer {
+    background: #fde8e8;
+    color: #a11818;
+}
+
+.status-Inactive {
+    background: #e9ecef;
+    color: #6c757d;
+}
