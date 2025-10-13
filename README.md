@@ -1,6 +1,6 @@
 # YourChickenGuide
 A personal project built to learn and apply ASP.NET Core MVC, Entity Framework Core, and MySQL.
-This app helps me keep track of my chickens  — their legband IDs, hatch dates, colors, breeds, 
+This app helps me keep track of my chickens  â€” their legband IDs, hatch dates, colors, breeds, 
 notes, and pedigree (mother/father relationships).
 
 # What It Does
@@ -29,6 +29,5 @@ notes, and pedigree (mother/father relationships).
 - MySQL - relational database
 
 # Notes
-- This is a learning project – I use it to experiment with EF Core, database design, and ASP.NET MVC.
+- This is a learning project â€“ I used it to experiment with EF Core, database design, and ASP.NET MVC.
 - The database schema includes self-referencing foreign keys for mother/father tracking.
-- The code is intentionally simple, focusing on clarity and CRUD basics.
